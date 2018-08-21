@@ -14,6 +14,7 @@ import sys
 import datetime
 import shutil
 import os
+from datetime import datetime
 
 
 server = 'WHQPC-L31249\SQLEXPRESS'
@@ -329,13 +330,28 @@ def clean_df(df):
     return cleaneddf
     
     
+def generate_input_files(fulldf,downloaded_file):
+
+    groups = fulldf.groupby(['VendorName','InvoiceNumber'])
+    #print (downloaded_file)
     
+    for key,group in groups:
+        
+        #print('key = {0}'.format(key[1]))
+        groupdf = pd.DataFrame(group)
+        processDate = groupdf['FintechProcessDate'].unique()[0]
+        InvNum = key[1]
+        Vendorname = key[0][0:30]
+        
+        groupdf.to_csv(str(datetime.strftime(datetime.strptime(processDate,'%m/%d/%Y'),'%d%b%Y'))+Vendorname+str(InvNum)+'.csv')
     
+    shutil.move(source_dir + downloaded_file, download_archive+downloaded_file)
 
 ################ MAIN CODE STARTS HERE ###########################
 
 source_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/input/"
 dest_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/processed/"
+download_archive = "C:/Anil/Projects/wsl/InvoiceAutomation/download_archive/"
 
 os.chdir(source_dir)
 
@@ -345,6 +361,12 @@ decimal_point_char = locale.localeconv()['decimal_point']
 ###############################################################
 
 if __name__ == "__main__":
+    
+    downloaded_file = glob.glob('*.csv')
+    
+    fulldf = pd.read_csv(downloaded_file[0])
+    
+    generate_input_files(fulldf,downloaded_file[0])
     
     for file in glob.glob('*.csv'):
         
