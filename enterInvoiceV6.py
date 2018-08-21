@@ -43,6 +43,8 @@ def insertPODetail(df):
     sNo = 0
     exceptCount = 0 
     
+    c = None
+    
     for row in df.itertuples():
     
         QtyOrder = 0
@@ -88,7 +90,7 @@ def insertPODetail(df):
             try:
                 
                 exceptParams =[str(InvoiceNumber),vendor,row.InvoiceDate,InvoiceAmount,int(row.InvoiceItemCount),
-                           str(vpn),row.ProductDescription,qty,row.UnitCost,row.UnitOfMeasure,extendedPrice,int(row.PPC),int(row.PackUPC)]
+                           str(vpn),row.ProductDescription,qty,row.UnitCost,row.UnitOfMeasure,extendedPrice,row.PPC,row.PackUPC]
                 
                 e = cursor.execute("{call xx_spWSInsertVPNExceptions (?,?,?,?,?,?,?,?,?,?,?,?,?)}",exceptParams)
             
@@ -182,7 +184,10 @@ def insertPODetail(df):
     
     
     
-    return [1,c,str(InvoiceNumber),exceptCount]
+    if c is not None:
+        return [1,c,str(InvoiceNumber),exceptCount]
+    else:
+        return [2]
     
 def insertPOSummary(InvNumber):
     
@@ -366,82 +371,97 @@ if __name__ == "__main__":
     
     fulldf = pd.read_csv(downloaded_file[0])
     
-    generate_input_files(fulldf,downloaded_file[0])
+    generate = True #TEMPERORY
+    
+    if generate == True:
+        generate_input_files(fulldf,downloaded_file[0])
     
     for file in glob.glob('*.csv'):
         
+        print("Processing FILE {0}".format(file))
         tempdf = pd.read_csv(file)
         
         df = clean_df(tempdf)
         
-        vendor = df.VendorName.unique()[0]
-    
-        InvoiceNumber = 'AUT-'+str(df.InvoiceNumber.unique()[0])
+        if df.shape[0] > 0:
+            
+            vendor = df.VendorName.unique()[0]
         
-        cur = cursor.execute("SELECT 1 FROM PurchaseOrderSummary WHERE InvoiceNumber = ?",InvoiceNumber)
-        
-        inv_cur = cur.fetchone()
-        
-        if inv_cur is not None:
+            InvoiceNumber = 'AUT-'+str(df.InvoiceNumber.unique()[0])
             
-            currDt = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            cur = cursor.execute("SELECT 1 FROM PurchaseOrderSummary WHERE InvoiceNumber = ?",InvoiceNumber)
             
-            InvoiceNumber = InvoiceNumber + currDt
-        # Check the Distributor Name for prefix
-        if vendor == 'Coors Distributing Company':
-            prefix = 'C'
-    
-    
-        PoNumber = get_po_number()
-    
-    
-        poDetailStatus = insertPODetail(df)
-        
+            inv_cur = cur.fetchone()
             
-        if poDetailStatus[0] == 1:
-            
-            print('Insert PO Detail - SUCCESSFUL!!!!!!')
-            
-            poSummStatus = insertPOSummary(poDetailStatus[2])
-            
-            if poSummStatus[0] == 1:
+            if inv_cur is not None:
                 
-                print('Insert PO SUMAARY - SUCCESSFUL!!!!!!')
+                currDt = datetime.strftime(datetime.now(),"%Y-%m-%d %H:%M:%S")
                 
-                #print('passing Invoice number to recevie {0}'.format(poDetailStatus[2]))
-                '''
-                print('PO Detail cursor commited')
-                poSummStatus[1].commit()
-                print('PO Summary cursor commited')
-                #poReceive[1].commit()
-                print('PO Receive cursor commited')
-                poSummStatus[1].close()
-                
-                print('Closing PO Summ connection')
+                InvoiceNumber = InvoiceNumber + currDt
+            # Check the Distributor Name for prefix
+            if vendor == "Coors Distributing Company":
+                prefix = 'C'
+            elif vendor == "Anheuser-Busch Sales - Littleton":
+                prefix = 'AA0'
+            elif vendor == "Republic National Dist - CO":
+                prefix = 'N'
         
-                '''
-                poReceive = receivePO(poDetailStatus[2])
+        
+            PoNumber = get_po_number()
+        
+        
+            poDetailStatus = insertPODetail(df)
+            
                 
-                if poReceive[0] == 1:
+            if poDetailStatus[0] == 1:
+                
+                print('Insert PO Detail - SUCCESSFUL!!!!!!')
+                
+                poSummStatus = insertPOSummary(poDetailStatus[2])
+                
+                if poSummStatus[0] == 1:
                     
-                    print('Receive SUCCESSFUL!!!!')
+                    print('Insert PO SUMAARY - SUCCESSFUL!!!!!!')
                     
-                    poLog = logFileProcessed(file,poDetailStatus[2],poReceive[2])
+                    #print('passing Invoice number to recevie {0}'.format(poDetailStatus[2]))
+                    '''
+                    print('PO Detail cursor commited')
+                    poSummStatus[1].commit()
+                    print('PO Summary cursor commited')
+                    #poReceive[1].commit()
+                    print('PO Receive cursor commited')
+                    poSummStatus[1].close()
                     
-                    if poLog ==1:
-                        
-                        poDetailStatus[1].commit()
+                    print('Closing PO Summ connection')
+            
+                    '''
+                    poReceive = receivePO(poDetailStatus[2])
                     
-                        print('PO Detail cursor commited')
-                        poSummStatus[1].commit()
-                        print('PO Summary cursor commited')
-                        poReceive[1].commit()
-                        print('PO Receive cursor commited')
-                        #poSummStatus[1].close()
+                    if poReceive[0] == 1:
                         
-                        print('Closing PO Summ connection')
+                        print('Receive SUCCESSFUL!!!!')
                         
-                        shutil.move(source_dir + file, dest_dir+file)
+                        poLog = logFileProcessed(file,poDetailStatus[2],poReceive[2])
                         
+                        if poLog ==1:
+                            
+                            poDetailStatus[1].commit()
+                        
+                            print('PO Detail cursor commited')
+                            poSummStatus[1].commit()
+                            print('PO Summary cursor commited')
+                            poReceive[1].commit()
+                            print('PO Receive cursor commited')
+                            #poSummStatus[1].close()
+                            
+                            print('Closing PO Summ connection')
+                            
+                            shutil.move(source_dir + file, dest_dir+file)
+            elif poDetailStatus[0] == 2:
+                shutil.move(source_dir + file, dest_dir+file)
+                print("Nothing to process in file {0}".format(file))
+        else:
+            print("DF is empty when processing file {0}".format(file))
+            shutil.move(source_dir + file, dest_dir+file)                
     cursor.close()
                         
