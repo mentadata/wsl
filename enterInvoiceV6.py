@@ -56,7 +56,12 @@ def insertPODetail(df):
         qty = 0
 
         vpn = ''
-        vpn = prefix + r.sub('',row.ProductNumber)
+        vpn = r.sub('',row.ProductNumber)
+        
+        if vendor == "Republic National Dist - CO":
+            vpn = vpn.lstrip('0')
+        
+        vpn = prefix + vpn
         
         #vpn = 'C00031'
         
