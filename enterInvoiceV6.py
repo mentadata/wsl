@@ -44,6 +44,7 @@ def insertPODetail(df):
     exceptCount = 0 
     
     c = None
+    e = None
     
     for row in df.itertuples():
     
@@ -191,8 +192,8 @@ def insertPODetail(df):
     
     if c is not None:
         return [1,c,str(InvoiceNumber),exceptCount]
-    else:
-        return [2]
+    elif e is not None: #Scenario - If only one item exists in file and that does not exists in POS. If a file has atleast one item that is in POS, "c" will be NOT None and above will be returned
+        return [2,e]
     
 def insertPOSummary(InvNumber):
     
@@ -410,6 +411,14 @@ if __name__ == "__main__":
                 prefix = 'AA0'
             elif vendor == "Republic National Dist - CO":
                 prefix = 'N'
+            elif vendor == "Beverage Distributors Company dba Breakthru Bev":
+                prefix = 'BDC'
+            elif vendor == "Elite Brands of Colorado":
+                prefix = 'ELITE'
+            elif vendor == "Synergy Fine Wines Dominico Distribution":
+                prefix = 'SYN'
+            elif vendor == "Classic Wines, LLC":
+                prefix = 'CW'
         
         
             PoNumber = get_po_number()
@@ -459,12 +468,13 @@ if __name__ == "__main__":
                             print('PO Receive cursor commited')
                             #poSummStatus[1].close()
                             
-                            print('Closing PO Summ connection')
+                            #print('Closing PO Summ connection')
                             
                             shutil.move(source_dir + file, dest_dir+file)
             elif poDetailStatus[0] == 2:
                 shutil.move(source_dir + file, dest_dir+file)
                 print("Nothing to process in file {0}".format(file))
+                poDetailStatus[1].commit()
         else:
             print("DF is empty when processing file {0}".format(file))
             shutil.move(source_dir + file, dest_dir+file)                
