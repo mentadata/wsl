@@ -59,7 +59,7 @@ def insertPODetail(df):
         vpn = ''
         vpn = r.sub('',row.ProductNumber)
         
-        if vendor == "Republic National Dist - CO":
+        if vendor in ["Republic National Dist - CO","Southern Glazer's Wine & Spirits of CO"]:
             vpn = vpn.lstrip('0')
         
         vpn = prefix + vpn
@@ -419,6 +419,8 @@ if __name__ == "__main__":
                 prefix = 'SYN'
             elif vendor == "Classic Wines, LLC":
                 prefix = 'CW'
+            elif vendor == "Southern Glazer's Wine & Spirits of CO":
+                prefix = 'SW'
         
         
             PoNumber = get_po_number()
