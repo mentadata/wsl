@@ -41,7 +41,7 @@ CREATE PROCEDURE [dbo].[xx_spWSInsertVPNExceptions]
 	@unit_cost			money,
 	@unit_of_measure	varchar(5),
 	@etended_price		money,
-	@ppc				int,
+	@ppc				varchar(25),
 	@scancode			varchar(25)
 	
 AS
