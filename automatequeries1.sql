@@ -113,7 +113,7 @@ go
 execute xx_spWSInsertPOSummary 'AUT-6611912018-08-10 14:05:32'
 
 
-select * from iteminfo where VendPartNumber = 'C01906'
+select * from iteminfo where VendPartNumber = '%7071'
 
 select * from PurchaseOrderSummary order by rcvdate desc
 
@@ -123,13 +123,20 @@ select * from PurchaseOrderSummary order by rcvdate desc
 
 select * from xx_PurchaseOrderSummary_tbl
 
-select * from xx_invoice_entry_exceptions
+select * from xx_invoice_entry_exceptions 
+where invoice_number in ('AUT-1803602',
+'AUT-1309064',
+'AUT-329342997',
+'AUT-329342996',
+'AUT-329342994',
+'AUT-329342993')
+order by date_inserted desc
 
-select * from xx_receiveditemslog
+select * from xx_receiveditemslog order by date_received desc
 
 select * from xx_runningstatus
 
-select * from xx_log_file_processed_tbl
+select * from xx_log_file_processed_tbl order by dateprocessed desc
 
 delete from PurchaseOrderDetail where PONumber = 1122
 

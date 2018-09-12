@@ -10,9 +10,7 @@
 -- the definition of the procedure.
 -- ================================================
 -- =============================================
--- Author:		Anil Menta
--- Create date: 7/23/2018
--- Description:	<Description,,>
+
 -- =============================================
 USE [POSDB]
 GO

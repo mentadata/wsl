@@ -26,7 +26,7 @@ select * from xx_receiveditemslog
 
 delete from xx_receiveditemslog
 
-drop table ItemInfo
+drop table xx_ItemInfo
 
 select * into xx_iteminfo from ItemInfo
 
@@ -52,7 +52,7 @@ from xx_iteminfo b,
 	 PurchaseOrderDetail c
 where a.VendPartNumber = b.VendPartNumber
 and c.VPN = b.VendPartNumber
-and c.InvoiceNumber = 'AUT-6611912018-08-10 19:35:18'
+and c.InvoiceNumber = 'AUT-290692018-08-13 23:05:09'
 
 
 use posdb
