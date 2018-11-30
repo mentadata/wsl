@@ -17,13 +17,13 @@ import os
 from datetime import datetime
 
 
-server = 'WHQPC-L31249\SQLEXPRESS'
+server = 'WESTSIDE-SERVER\TIGERPOS'
 database = 'POSDB'
-username = 'poc'
+username = 'tst'
 password = 'Welcome@123'
 
 
-conn = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = conn.cursor()
 
 def get_po_number():
@@ -296,6 +296,8 @@ def logFileProcessed(file_name,inv_number,rcvd_count):
 
 def clean_df(df):
     
+    df['Quantity'] = df['Quantity'].apply(lambda x: int(re.sub(r'[^0-9'+decimal_point_char+r']+', '', str(x))))
+    
     #Returned to vendor or out of stock ones come as -ve or 0 qty
     tdf = df[df.Quantity > 0].copy(deep=True)
     
@@ -359,10 +361,14 @@ def generate_input_files(fulldf,downloaded_file):
     shutil.move(source_dir + downloaded_file, download_archive+downloaded_file)
 
 ################ MAIN CODE STARTS HERE ###########################
-
+'''
 source_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/input/"
 dest_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/processed/"
 download_archive = "C:/Anil/Projects/wsl/InvoiceAutomation/download_archive/"
+'''
+source_dir = "C:/wsl/InvoiceAutomation/input/"
+dest_dir = "C:/wsl/InvoiceAutomation/processed/"
+download_archive = "C:/wsl/InvoiceAutomation/download_archive/"
 
 os.chdir(source_dir)
 
@@ -375,9 +381,9 @@ if __name__ == "__main__":
     
     downloaded_file = glob.glob('*.csv')
     
-    fulldf = pd.read_csv(downloaded_file[0])
+    fulldf = pd.read_csv(downloaded_file[0],encoding='cp1252')
     
-    generate = True #TEMPERORY
+    generate = False #TEMPERORY
     
     if generate == True:
         generate_input_files(fulldf,downloaded_file[0])
@@ -405,6 +411,8 @@ if __name__ == "__main__":
                 
                 InvoiceNumber = InvoiceNumber + currDt
             # Check the Distributor Name for prefix
+            prefix = 'XXX'
+            
             if vendor == "Coors Distributing Company":
                 prefix = 'C'
             elif vendor == "Anheuser-Busch Sales - Littleton":
@@ -421,6 +429,8 @@ if __name__ == "__main__":
                 prefix = 'CW'
             elif vendor == "Southern Glazer's Wine & Spirits of CO":
                 prefix = 'SW'
+            elif vendor == "Western Distributing Company, Inc":
+                prefix = 'WDC'
         
         
             PoNumber = get_po_number()
