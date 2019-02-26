@@ -20,7 +20,13 @@ SELECT DISTINCT
  go
 
 
- SELECT 1 FROM ItemInfo WHERE VendPartNumber = '04825'
+ SELECT ItemName,StdPrice,WebPrice
+  FROM ItemInfo 
+  where StdPrice <> WebPrice
+
+ update ItemInfo
+ set WebPrice = StdPrice
+
 
   
 
@@ -123,22 +129,83 @@ select * from PurchaseOrderSummary order by rcvdate desc
 
 select * from xx_PurchaseOrderSummary_tbl
 
-select * from xx_invoice_entry_exceptions 
-where invoice_number in ('AUT-1803602',
-'AUT-1309064',
-'AUT-329342997',
-'AUT-329342996',
-'AUT-329342994',
-'AUT-329342993')
-order by date_inserted desc
+select * from xx_invoice_entry_exceptions where upper(item_description) like '%DIA%'
+
+select invoice_number,
+       vendor,
+	   invoice_amount,
+	   invoice_item_count,
+	   vpn,
+	   item_description,
+	   quantity,
+	   unit_cost,
+	   unit_of_measure,
+	   etended_price,
+	   ppc,
+	   date_inserted,
+	   invoice_date
+ from xx_invoice_entry_exceptions 
+  order by date_inserted desc
+
+where date_inserted = GETDATE()
+
+delete from xx_receiveditemslog where CONVERT(VARCHAR(20), date_received, 100) = 'Nov 30 2018 12:29PM'
+
+update ItemInfo
+set QtyOnHand = QtyOnHand - 12.00
+where VendPartNumber = 'AA013416'
+
+AA013464
+AA013814
+AA013826
+AA013924
+AA014000
+AA014124
+AA014170
+AA014276
 
 select * from xx_receiveditemslog order by date_received desc
+
+select QtyOnHand from ItemInfo where VendPartNumber = 'AA013418'
+
+'yyyy-mm-dd hh:mi'
+ 
+where DATEPART('yyyy-mm-dd hh:mi',date_inserted) = 'C48697'
+
+
+
+
+select CONVERT(date, date_received) from xx_receiveditemslog
+
+select xlog.date_received,
+       xlogfile.inputfile,
+	   po.invoicenumber,
+       po.vpn,
+	   itemingname,
+	   lastcost1,
+	   costperunit,
+	   (costperunit - lastcost1) unit_cost_diff,
+	  ( (costperunit - lastcost1) / lastcost1) * 100 as '%_increase'
+from PurchaseOrderDetail po,
+     xx_receiveditemslog xlog,
+	 xx_log_file_processed_tbl xlogfile
+where po.InvoiceNumber = xlog.invoice_number
+and   po.vpn = xlog.vpn
+and   po.InvoiceNumber = xlogfile.invoice_number
+--and po.InvoiceNumber = 'AUT-1825762'
+and   CONVERT(date, xlog.date_received) = '2019-01-31'
+and lastcost1 > 0
+and ( (costperunit - lastcost1) / lastcost1) * 100 > 2.0
+
+
+select * from PurchaseOrderDetail where InvoiceNumber = 'AUT-1825762'
+
 
 select * from xx_runningstatus
 
 select * from xx_log_file_processed_tbl order by dateprocessed desc
 
-delete from PurchaseOrderDetail where PONumber = 1122
+delete from PurchaseOrderDetail where InvoiceNumber = 'SW899182'
 
 delete from PurchaseOrderSummary where PONumber = 1123
 
