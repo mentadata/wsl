@@ -296,7 +296,8 @@ def logFileProcessed(file_name,inv_number,rcvd_count):
 
 def clean_df(df):
     
-    df['Quantity'] = df['Quantity'].apply(lambda x: int(re.sub(r'[^0-9'+decimal_point_char+r']+', '', str(x))))
+    #Commented cleaning of Quantity as fintech gives clean numbers 11/30
+    #df['Quantity'] = df['Quantity'].apply(lambda x: int(re.sub(r'[^0-9'+decimal_point_char+r']+', '', str(x))))
     
     #Returned to vendor or out of stock ones come as -ve or 0 qty
     tdf = df[df.Quantity > 0].copy(deep=True)
@@ -383,7 +384,7 @@ if __name__ == "__main__":
     
     fulldf = pd.read_csv(downloaded_file[0],encoding='cp1252')
     
-    generate = False #TEMPERORY
+    generate = True #TEMPERORY
     
     if generate == True:
         generate_input_files(fulldf,downloaded_file[0])
