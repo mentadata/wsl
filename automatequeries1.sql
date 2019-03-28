@@ -24,13 +24,13 @@ SELECT DISTINCT
   FROM ItemInfo 
   where StdPrice <> WebPrice
 
- update ItemInfo
- set WebPrice = StdPrice
 
 
   
 
- SELECT 1 FROM ItemInfo WHERE VendPartNumber = 'C04825'
+ 
+
+
 
  select * from PurchaseOrderDetail where VPN = 'C04825' 
  order by PONumber desc
@@ -145,7 +145,8 @@ select invoice_number,
 	   date_inserted,
 	   invoice_date
  from xx_invoice_entry_exceptions 
-  order by date_inserted desc
+ where convert(date,date_inserted)= '2019-03-02'  
+ order by date_inserted desc
 
 where date_inserted = GETDATE()
 
@@ -193,7 +194,7 @@ where po.InvoiceNumber = xlog.invoice_number
 and   po.vpn = xlog.vpn
 and   po.InvoiceNumber = xlogfile.invoice_number
 --and po.InvoiceNumber = 'AUT-1825762'
-and   CONVERT(date, xlog.date_received) = '2019-01-31'
+and   CONVERT(date, xlog.date_received) = '2019-02-25'
 and lastcost1 > 0
 and ( (costperunit - lastcost1) / lastcost1) * 100 > 2.0
 

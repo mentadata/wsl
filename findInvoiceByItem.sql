@@ -12,7 +12,7 @@
       xx_receiveditemslog rcvd
  where po.VPN = rcvd.vpn
  and po.InvoiceNumber = rcvd.invoice_number
- and po.ItemIngName like '%SMIRNOFF%BLUEBERR'
+ and po.ItemIngName like '%APOTHIC%'
  order by rcvd.date_received
  desc
 
