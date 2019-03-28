@@ -57,7 +57,14 @@ def insertPODetail(df):
         qty = 0
 
         vpn = ''
-        vpn = r.sub('',row.ProductNumber)
+        if vendor == "Veraison Beverage Distributors":
+            vpn = ''.join(e for e in row.ProductNumber if e.isalnum())
+        elif vendor == "CTS Distributing INC":
+            vpn = row.ProductNumber[:row.ProductNumber.index('_')]
+            vpn = r.sub('',row.ProductNumber)
+        else:
+            vpn = r.sub('',row.ProductNumber)
+        
         
         if vendor in ["Republic National Dist - CO","Southern Glazer's Wine & Spirits of CO"]:
             vpn = vpn.lstrip('0')
@@ -424,14 +431,18 @@ if __name__ == "__main__":
                 prefix = 'BDC'
             elif vendor == "Elite Brands of Colorado":
                 prefix = 'ELITE'
-            elif vendor == "Synergy Fine Wines Dominico Distribution":
+            elif vendor == "Synergy Fine Wines Dominico Distribution - CO":
                 prefix = 'SYN'
             elif vendor == "Classic Wines, LLC":
                 prefix = 'CW'
-            elif vendor == "Southern Glazer's Wine & Spirits of CO":
+            elif vendor == "Southern Glazer's Wine & Spirits of CO": 
                 prefix = 'SW'
             elif vendor == "Western Distributing Company, Inc":
                 prefix = 'WDC'
+            elif vendor == "Veraison Beverage Distributors":
+                prefix = 'VBD'
+            elif vendor == "Estate Brands Distributing Company":
+                prefix = 'EBDC'    
         
         
             PoNumber = get_po_number()
