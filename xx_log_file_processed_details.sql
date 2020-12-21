@@ -21,8 +21,9 @@ GO
 CREATE PROCEDURE xx_log_file_processed_details 
 	-- Add the parameters for the stored procedure here
 	@file_name varchar(50),
-	@InvoiceNumber varchar(30),
-	@rcvd_count int
+	@InvoiceNumber varchar(35),
+	@rcvd_count int,
+	@itemseligible_count int
 
 AS
 DECLARE
@@ -49,8 +50,8 @@ BEGIN
 	
 
     -- Insert statements for procedure here
-	INSERT INTO xx_log_file_processed_tbl (inputfile,invoice_number,itemseligible,rcvd_count,totalamt,dateprocessed)
-	VALUES (@file_name,@InvoiceNumber,@NoOfItems,@rcvd_count,@TotalAmnt,@dateprocessed)
+	INSERT INTO xx_log_file_processed_tbl (inputfile,invoice_number,itemseligible,rcvd_count,totalamt,dateprocessed,posummary_count)
+	VALUES (@file_name,@InvoiceNumber,@itemseligible_count,@rcvd_count,@TotalAmnt,@dateprocessed,@NoOfItems)
 
 	DEALLOCATE file_log_cur
 END

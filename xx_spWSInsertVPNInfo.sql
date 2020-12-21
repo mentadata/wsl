@@ -1,17 +1,3 @@
--- ================================================
--- Template generated from Template Explorer using:
--- Create Procedure (New Menu).SQL
---
--- Use the Specify Values for Template Parameters 
--- command (Ctrl-Shift-M) to fill in the parameter 
--- values below.
---
--- This block of comments will not be included in
--- the definition of the procedure.
--- ================================================
--- =============================================
-
--- =============================================
 USE [POSDB]
 GO
 SET ANSI_NULLS ON
@@ -35,8 +21,15 @@ CREATE PROCEDURE [dbo].[xx_spWSInsertVPNInfo]
 	@CaseOrder MONEY,
 	@CaseCost MONEY,
 	@TotalCost MONEY,
-	@unitCost MONEY
-AS
+	@unitCost MONEY,
+	@file varchar(75),
+	@caseupc varchar(30),
+	@packupc varchar(30),
+	@final_upc varchar(30),
+	@glcode varchar(20),
+	@source varchar(20),
+	@fintech_description varchar(150)
+AS	
 
 DECLARE
 
@@ -61,8 +54,8 @@ DECLARE
 @LastCost MONEY,
 @GUID uniqueidentifier,
 @ZeroCostTotalAmount MONEY, 
-@ZeroCStatus varchar(30)
-
+@ZeroCStatus varchar(30),
+@dateprocessed datetime
 
 BEGIN
 
@@ -177,6 +170,7 @@ BEGIN
 
 	
 	SET @GUID = NEWID()
+	SET @dateprocessed = GETDATE()
 
 	
 	
@@ -186,6 +180,9 @@ BEGIN
 	VALUES (@PONumber, @InvoiceNumber, @SLNo, @ItemID, @ScanCode, @ItemOrIng, 
 			@ItemName, @VPN, @ISize, @AInCase,@CaseOrder, @CaseCost,@QtyOrder,@TotalUnit,@TotalCost, @CostPerUnit, @OUnitCost,
 			@SoldLast30, @SoldLast60, @SoldLast90,@LastCost1, @LastCost2, @LastCost3,'RCVDIR',@GUID,@ZeroCostTotalAmount,@ZeroCStatus)
+			
+	INSERT INTO xx_items_matching_source (filename,invoice_number,vpn,fintech_description,pos_description,caseupc,packupc,final_upc,glcode,source,date_inserted)
+	VALUES (@file,@InvoiceNumber,@vpn,@fintech_description,@ItemName,@caseupc,@packupc,@final_upc,@glcode,@source,@dateprocessed)
 
     CLOSE vpn_info_CUR
 	DEALLOCATE vpn_info_CUR

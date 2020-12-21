@@ -30,7 +30,7 @@ GO
 
 CREATE PROCEDURE [dbo].[xx_spWSInsertVPNExceptions]  
 	-- Add the parameters for the stored procedure here
-	@invoice_number		varchar(20),
+	@invoice_number		varchar(35),
 	@vendor				varchar(100),
 	@invoice_date		datetime,
 	@invoice_amount		money,
