@@ -16,11 +16,13 @@ import shutil
 import os
 from datetime import datetime
 
-""" 
-server = 'WESTSIDE-SERVER\TIGERPOS'
+
+server = 'SERVERRB\TIGERPOS'
 database = 'POSDB'
-username = 'tst'
+username = 'TigerTest'
 password = 'Welcome@123'
+
+
 """
 
 server = 'WHQPC-L31249\SQLEXPRESS'
@@ -28,16 +30,19 @@ database = 'RDLPOSDB'
 username = 'poc'
 password = 'Pa44word'
 
+"""
+
 scan_count = 0 ## Anil
 vpn_count = 0 ##Anil
 
-"""
+
 conn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = conn.cursor()
-"""
 
+"""
 conn = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 cursor = conn.cursor()
+"""
 
 def get_po_number():
     
@@ -474,15 +479,18 @@ def generate_input_files(fulldf,downloaded_file):
 
 ################ MAIN CODE STARTS HERE ###########################
 
+"""
 source_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/input/"
 dest_dir = "C:/Anil/Projects/wsl/InvoiceAutomation/processed/"
 download_archive = "C:/Anil/Projects/wsl/InvoiceAutomation/download_archive/"
 
-'''
-source_dir = "C:/wsl/InvoiceAutomation/input/"
-dest_dir = "C:/wsl/InvoiceAutomation/processed/"
-download_archive = "C:/wsl/InvoiceAutomation/download_archive/"
-'''
+"""
+
+
+source_dir = "C:/Users/MANAGER/IT/InvoiceAutomation/input/"
+dest_dir = "C:/Users/MANAGER/IT/InvoiceAutomation/processed/"
+download_archive = "C:/Users/MANAGER/IT/InvoiceAutomation/download_archive/"
+
 os.chdir(source_dir)
 
 #####################REGEXP CLEANUP#############################
@@ -531,7 +539,7 @@ if __name__ == "__main__":
     fulldf = pd.read_csv(downloaded_file[0],encoding='cp1252',names=df_col_headers,header=0,dtype={"ProductNumber":"str"},index_col=False)
     #fulldf = fulldf[fulldf["ProductNumber"].astype(str).str[0] == '0']
     
-    generate = True #TEMPERORY
+    generate = False #TEMPERORY
     
     if generate == True:
         generate_input_files(fulldf,downloaded_file[0])
