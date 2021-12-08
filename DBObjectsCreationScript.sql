@@ -42,6 +42,20 @@ create table dbo.xx_log_file_processed_tbl
  dateprocessed datetime,
  posummary_count int)
 
+ CREATE TABLE [dbo].[xx_items_matching_source](
+	[filename] [varchar](75) NULL,
+	[invoice_number] [varchar](50) NULL,
+	[vpn] [varchar](40) NULL,
+	[fintech_description] [varchar](150) NULL,
+	[pos_description] [varchar](150) NULL,
+	[caseupc] [varchar](30) NULL,
+	[packupc] [varchar](30) NULL,
+	[final_upc] [varchar](30) NULL,
+	[glcode] [varchar](20) NULL,
+	[source] [varchar](20) NULL,
+	[date_inserted] [datetime] NULL
+)
+
 --**************** PROCEDURES ****************
 
 C:\Anil\Projects\wsl\InvoiceAutomation\xx_spWSInsertVPNInfo.sql
