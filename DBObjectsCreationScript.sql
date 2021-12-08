@@ -4,9 +4,9 @@ select * into xx_PurchaseOrderDetail_tbl from PurchaseOrderDetail where 1=2
 
 select * into xx_PurchaseOrderSummary_tbl from PurchaseOrderSummary where 1=2
 
-create table xx_invoice_entry_exceptions
+create table POSDB.dbo.xx_invoice_entry_exceptions
 (
-invoice_number varchar(20),
+invoice_number varchar(35),
 vendor	varchar(100),
 invoice_date datetime,
 invoice_amount	money,
@@ -35,11 +35,12 @@ date_received datetime)
 
 create table dbo.xx_log_file_processed_tbl 
 (inputfile varchar(50),
- invoice_number varchar(30),
+ invoice_number varchar(35),
  itemseligible int,
  rcvd_count int,
  totalamt money,
- dateprocessed datetime)
+ dateprocessed datetime,
+ posummary_count int)
 
 --**************** PROCEDURES ****************
 
@@ -52,5 +53,7 @@ C:\Anil\Projects\wsl\InvoiceAutomation\xx_spWSInsertVPNExceptions.sql
 C:\Anil\Projects\wsl\InvoiceAutomation\xx_log_file_processed_details.sql
 
 C:\Anil\Projects\wsl\InvoiceAutomation\purchaseOrderreceive.sql
+
+C:\Anil\Projects\wsl\InvoiceAutomation\xx_spWSUpdateVPNFromExceptions.sql
 
 
