@@ -71,3 +71,15 @@ C:\Anil\Projects\wsl\InvoiceAutomation\purchaseOrderreceive.sql
 C:\Anil\Projects\wsl\InvoiceAutomation\xx_spWSUpdateVPNFromExceptions.sql
 
 
+--Temporary one time to fix data in rox store
+
+BEGIN TRANSACTION;
+update dbo.ItemInfo set AmntInCase = 6 where VendPartNumber = '9018347'
+COMMIT TRANSACTION;
+
+--9317840
+--9111378
+--9151529
+--9018347
+
+
